@@ -1,0 +1,8 @@
+credentials.json
+letsencrypt/**
+*.pem
+.terraform
+.terraform.*
+terraform.tfvars
+terraform.tfstate*
+.vscode/
