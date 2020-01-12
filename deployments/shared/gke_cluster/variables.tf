@@ -13,6 +13,5 @@ variable "node_code" {
 }
 
 variable "zone" {
-  default = "us-east1-b"
   description = "Zone used to create the resources."
 }
