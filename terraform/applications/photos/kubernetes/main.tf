@@ -8,7 +8,7 @@ locals {
 
 resource "kubernetes_secret" "tls_certificate" {
   metadata {
-    name = substr(var.domain, 0, length(var.domain) - 1)
+    name = "photos-domain"
   }
 
   data = {
@@ -18,6 +18,7 @@ resource "kubernetes_secret" "tls_certificate" {
 
   type = "kubernetes.io/tls"
 }
+
 resource "kubernetes_service" "photos_frontend" {
   metadata {
     name = local.frontend_name

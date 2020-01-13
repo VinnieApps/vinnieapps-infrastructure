@@ -11,6 +11,9 @@ variable "environment" {
 }
 
 variable "region" {
-  default = "us-east1"
-  description = "Region where the environment is going to be created."
+  description = "Region where the DB instance is going to be created."
+}
+
+variable "zone" {
+  description = "Zone where the DB instance is going to be created."
 }

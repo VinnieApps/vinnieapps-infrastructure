@@ -1,9 +1,9 @@
-variable "domain" {
-  description = "Domain name where the application will be exposed"
-}
-
 variable "environment" {
   description = "Name of the environment your building."
+}
+
+variable "subdomain" {
+  description = "Sub domain name where the application will be exposed"
 }
 
 variable "tls_certificate" {

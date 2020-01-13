@@ -7,8 +7,9 @@ data "template_file" "init_script" {
 }
 
 resource "google_compute_instance" "mysql_instance" {
-  name = "${var.db_name}-${var.environment}-db-instance"
+  name         = "${var.db_name}-${var.environment}-db-instance"
   machine_type = "g1-small"
+  zone         = var.zone
 
   boot_disk {
     initialize_params {
@@ -16,7 +17,7 @@ resource "google_compute_instance" "mysql_instance" {
     }
   }
 
-  tags = [ "database", "mysql" ]
+  tags = [ "database", "mysql", var.db_name ]
 
   labels = {
     environment = var.environment
