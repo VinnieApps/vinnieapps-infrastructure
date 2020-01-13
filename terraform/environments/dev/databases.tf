@@ -1,5 +1,5 @@
 module "photos_mysql" {
-  source = "../../../shared/mysql_instance"
+  source = "../../shared/mysql_instance"
 
   db_name     = "photos"
   db_password = var.db_password
