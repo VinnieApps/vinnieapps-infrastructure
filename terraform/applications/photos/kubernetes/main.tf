@@ -4,25 +4,20 @@ locals {
 
   service_name = "photos-service"
   service_port = 8080
+
+  namespace = "photos"
 }
 
 resource "kubernetes_namespace" "photos" {
   metadata {
-    annotations = {
-      name = "photos"
-    }
-
-    labels = {
-      istio-injection = "enabled"
-    }
-
-    name = "photos"
+    name = local.namespace
   }
 }
 
 resource "kubernetes_secret" "tls_certificate" {
   metadata {
-    name = "istio-ingressgateway-certs"
+    name = "photos-tls"
+    namespace = local.namespace
   }
 
   data = {
@@ -36,10 +31,11 @@ resource "kubernetes_secret" "tls_certificate" {
 resource "kubernetes_service" "photos_frontend" {
   metadata {
     name = local.frontend_name
+    namespace = local.namespace
   }
 
   spec {
-    type = "ClusterIP"
+    type = "NodePort"
 
     selector = {
       app = local.frontend_name
@@ -55,10 +51,11 @@ resource "kubernetes_service" "photos_frontend" {
 resource "kubernetes_service" "photos_service" {
   metadata {
     name = local.service_name
+    namespace = local.namespace
   }
 
   spec {
-    type = "ClusterIP"
+    type = "NodePort"
 
     selector = {
       app = local.service_name
@@ -67,6 +64,51 @@ resource "kubernetes_service" "photos_service" {
     port {
       port        = local.service_port
       target_port = local.service_port
+    }
+  }
+}
+
+resource "kubernetes_ingress" "photos_ingress" {
+  metadata {
+    name = "photos-ingress"
+    namespace = local.namespace
+
+    labels = {
+      "kubernetes.io/ingress.class" = "nginx"
+    }
+  }
+
+  spec {
+    tls {
+      secret_name = kubernetes_secret.tls_certificate.metadata[0].name
+    }
+
+    rule {
+      http {
+        path {
+          path = "/*"
+          backend {
+            service_name = local.frontend_name
+            service_port = local.frontend_port
+          }
+        }
+
+        path {
+          path = "/authenticate/*"
+          backend {
+            service_name = local.service_name
+            service_port = local.service_port
+          }
+        }
+
+        path {
+          path = "/api/v1/*"
+          backend {
+            service_name = local.service_name
+            service_port = local.service_port
+          }
+        }
+      }
     }
   }
 }

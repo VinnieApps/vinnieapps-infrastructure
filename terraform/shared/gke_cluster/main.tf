@@ -23,6 +23,7 @@ resource "google_container_cluster" "primary" {
       environment = var.environment
     }
 
+    image_type = "UBUNTU"
     machine_type = var.machine_type
 
     oauth_scopes = [
