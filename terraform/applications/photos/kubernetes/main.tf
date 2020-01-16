@@ -6,9 +6,23 @@ locals {
   service_port = 8080
 }
 
+resource "kubernetes_namespace" "photos" {
+  metadata {
+    annotations = {
+      name = "photos"
+    }
+
+    labels = {
+      istio-injection = "enabled"
+    }
+
+    name = "photos"
+  }
+}
+
 resource "kubernetes_secret" "tls_certificate" {
   metadata {
-    name = "photos-domain"
+    name = "istio-ingressgateway-certs"
   }
 
   data = {
@@ -25,7 +39,7 @@ resource "kubernetes_service" "photos_frontend" {
   }
 
   spec {
-    type = "NodePort"
+    type = "ClusterIP"
 
     selector = {
       app = local.frontend_name
@@ -44,7 +58,7 @@ resource "kubernetes_service" "photos_service" {
   }
 
   spec {
-    type = "NodePort"
+    type = "ClusterIP"
 
     selector = {
       app = local.service_name
@@ -53,46 +67,6 @@ resource "kubernetes_service" "photos_service" {
     port {
       port        = local.service_port
       target_port = local.service_port
-    }
-  }
-}
-
-resource "kubernetes_ingress" "photos_ingress" {
-  metadata {
-    name = "photos-ingress"
-  }
-
-  spec {
-    tls {
-      secret_name = kubernetes_secret.tls_certificate.metadata[0].name
-    }
-
-    rule {
-      http {
-        path {
-          path = "/*"
-          backend {
-            service_name = local.frontend_name
-            service_port = local.frontend_port
-          }
-        }
-
-        path {
-          path = "/authenticate/*"
-          backend {
-            service_name = local.service_name
-            service_port = local.service_port
-          }
-        }
-
-        path {
-          path = "/api/v1/*"
-          backend {
-            service_name = local.service_name
-            service_port = local.service_port
-          }
-        }
-      }
     }
   }
 }

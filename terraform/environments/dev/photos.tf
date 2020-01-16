@@ -27,13 +27,13 @@ module "photos_kubernetes_services" {
   tls_private_key = file("../../privkey.pem")
 }
 
-module "photos_subdomain_dns_record" {
-  source = "../../applications/photos/dns"
+# module "photos_subdomain_dns_record" {
+#   source = "../../applications/photos/dns"
 
-  ip_address        = module.photos_kubernetes_services.load_balancer_ip_address
-  managed_zone_name = data.google_dns_managed_zone.base_domain.name
-  subdomain_fqdn    = local.subdomain_fqdn
-}
+#   ip_address        = module.photos_kubernetes_services.load_balancer_ip_address
+#   managed_zone_name = data.google_dns_managed_zone.base_domain.name
+#   subdomain_fqdn    = local.subdomain_fqdn
+# }
 
 module "photos_configuration" {
   source = "../../applications/photos/configuration"
