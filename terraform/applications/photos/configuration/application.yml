@@ -1,0 +1,19 @@
+api.base.path: /api/v1
+
+oauth.google:
+  clientId: ${google_client_id}
+  clientSecret: ${google_client_secret}
+  redirectUri: http://${subdomain}/authenticate/oauth2callback
+
+security.token.filter.secret: '${jwt_secret}'
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${db_host}:3306/${db_name}?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${db_username}
+    password: ${db_password}
+
+spring.servlet.multipart:
+  max-file-size: -1
+  max-request-size: -1

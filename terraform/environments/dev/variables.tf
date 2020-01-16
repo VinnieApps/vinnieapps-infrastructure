@@ -10,6 +10,14 @@ variable "environment" {
     description = "Name of the environment your building."
 }
 
+variable "google_client_id" {
+  description = "Client ID for Google OAuth used by Photos"
+}
+
+variable "google_client_secret" {
+  description = "Client Secret for Google OAuth used by Photos"
+}
+
 variable "project_id" {
     description = "ID of the Google Cloud Project to be used."
 }

@@ -34,3 +34,15 @@ module "photos_subdomain_dns_record" {
   managed_zone_name = data.google_dns_managed_zone.base_domain.name
   subdomain_fqdn    = local.subdomain_fqdn
 }
+
+module "photos_configuration" {
+  source = "../../applications/photos/configuration"
+
+  db_host              = module.photos_mysql.ip_address
+  db_name              = "photos"
+  db_password          = var.db_password
+  db_username          = "appuser"
+  google_client_id     = var.google_client_id
+  google_client_secret = var.google_client_secret
+  subdomain            = local.subdomain
+}
