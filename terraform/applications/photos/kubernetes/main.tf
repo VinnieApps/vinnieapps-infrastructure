@@ -80,6 +80,7 @@ resource "kubernetes_ingress" "photos_ingress" {
 
   spec {
     tls {
+      hosts = [var.subdomain]
       secret_name = kubernetes_secret.tls_certificate.metadata[0].name
     }
 
