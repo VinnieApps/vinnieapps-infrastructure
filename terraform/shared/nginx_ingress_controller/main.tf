@@ -20,6 +20,10 @@ resource "kubernetes_config_map" "nginx_configuration" {
     namespace = kubernetes_namespace.nginx_ingress.metadata[0].name
     labels = local.common_labels
   }
+
+  data = {
+    proxy-body-size: "0"
+  }
 }
 
 resource "kubernetes_config_map" "tcp_services" {
