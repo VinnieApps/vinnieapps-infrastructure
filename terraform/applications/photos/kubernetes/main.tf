@@ -85,9 +85,10 @@ resource "kubernetes_ingress" "photos_ingress" {
     }
 
     rule {
+      host = var.subdomain
       http {
         path {
-          path = "/*"
+          path = "/"
           backend {
             service_name = local.frontend_name
             service_port = local.frontend_port
@@ -95,7 +96,7 @@ resource "kubernetes_ingress" "photos_ingress" {
         }
 
         path {
-          path = "/authenticate/*"
+          path = "/authenticate"
           backend {
             service_name = local.service_name
             service_port = local.service_port
@@ -103,7 +104,7 @@ resource "kubernetes_ingress" "photos_ingress" {
         }
 
         path {
-          path = "/api/v1/*"
+          path = "/api/v1"
           backend {
             service_name = local.service_name
             service_port = local.service_port

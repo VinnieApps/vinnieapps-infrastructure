@@ -3,7 +3,13 @@ api.base.path: /api/v1
 oauth.google:
   clientId: ${google_client_id}
   clientSecret: ${google_client_secret}
-  redirectUri: http://${subdomain}/authenticate/oauth2callback
+  redirectUri: https://${subdomain}/authenticate/oauth2callback
+
+google.cloud:
+  credentials: '${credentials_content}'
+
+uploads.bucket.name: "photos-vinnieapps-${environment}"
+uploads.bucket.thumbnails: "photos-vinnieapps-${environment}-thumbnails"
 
 security.token.filter.secret: '${jwt_secret}'
 

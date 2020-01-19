@@ -1,3 +1,7 @@
+variable "credentials_json_content" {
+  description = "Content of the credentials.json file to use to access Google APIs"
+}
+
 variable "db_host" {
   description = "Hostname for the MySQL Database"
 }
@@ -12,6 +16,10 @@ variable "db_password" {
 
 variable "db_username" {
   description = "Username to connect to the Photos database"
+}
+
+variable "environment" {
+  description = "Name of the environment your building."
 }
 
 variable "google_client_id" {

@@ -38,11 +38,13 @@ module "photos_subdomain_dns_record" {
 module "photos_configuration" {
   source = "../../applications/photos/configuration"
 
-  db_host              = module.photos_mysql.ip_address
-  db_name              = "photos"
-  db_password          = var.db_password
-  db_username          = "appuser"
-  google_client_id     = var.google_client_id
-  google_client_secret = var.google_client_secret
-  subdomain            = local.subdomain
+  credentials_json_content = file("../../credentials.json")
+  db_host                  = module.photos_mysql.ip_address
+  db_name                  = "photos"
+  db_password              = var.db_password
+  db_username              = "appuser"
+  environment              = var.environment
+  google_client_id         = var.google_client_id
+  google_client_secret     = var.google_client_secret
+  subdomain                = local.subdomain
 }
