@@ -30,7 +30,21 @@ module "photos_kubernetes_services" {
 module "photos_subdomain_dns_record" {
   source = "../../applications/photos/dns"
 
-  ip_address        = module.photos_kubernetes_services.load_balancer_ip_address
+  ip_address        = module.nginx_ingress_controller.external_ip_address
   managed_zone_name = data.google_dns_managed_zone.base_domain.name
   subdomain_fqdn    = local.subdomain_fqdn
+}
+
+module "photos_configuration" {
+  source = "../../applications/photos/configuration"
+
+  credentials_json_content = file("../../credentials.json")
+  db_host                  = module.photos_mysql.ip_address
+  db_name                  = "photos"
+  db_password              = var.db_password
+  db_username              = "appuser"
+  environment              = var.environment
+  google_client_id         = var.google_client_id
+  google_client_secret     = var.google_client_secret
+  subdomain                = local.subdomain
 }
