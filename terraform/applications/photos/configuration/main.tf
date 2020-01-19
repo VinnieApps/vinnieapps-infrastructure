@@ -3,10 +3,30 @@ resource "random_password" "jwt_secret" {
   special = false
 }
 
-data "template_file" "configuration_file" {
-  template = file("${path.module}/application.yml")
+locals {
+  google_credentials_file_content = replace(var.credentials_json_content, "\n", "")
+}
+
+
+data "template_file" "jobs_configuration_file" {
+  template = file("${path.module}/application-jobs.yml")
   vars = {
-    credentials_content  = replace(var.credentials_json_content, "\n", "")
+    credentials_content  = local.google_credentials_file_content
+    db_host              = var.db_host
+    db_name              = var.db_name
+    db_password          = var.db_password
+    db_username          = var.db_username
+    environment          = var.environment
+    google_client_id     = var.google_client_id
+    google_client_secret = var.google_client_secret
+    subdomain            = var.subdomain
+  }
+}
+
+data "template_file" "service_configuration_file" {
+  template = file("${path.module}/application-service.yml")
+  vars = {
+    credentials_content  = local.google_credentials_file_content
     db_host              = var.db_host
     db_name              = var.db_name
     db_password          = var.db_password
@@ -19,6 +39,19 @@ data "template_file" "configuration_file" {
   }
 }
 
+resource "kubernetes_secret" "photos-jobs" {
+  metadata {
+    name      = "photos-jobs"
+    namespace = "photos"
+  }
+
+  data = {
+    "application.yml"  = data.template_file.jobs_configuration_file.rendered
+  }
+
+  type = "Opaque"
+}
+
 resource "kubernetes_secret" "photos-service" {
   metadata {
     name      = "photos-service"
@@ -26,7 +59,7 @@ resource "kubernetes_secret" "photos-service" {
   }
 
   data = {
-    "application.yml"  = data.template_file.configuration_file.rendered
+    "application.yml"  = data.template_file.service_configuration_file.rendered
   }
 
   type = "Opaque"
