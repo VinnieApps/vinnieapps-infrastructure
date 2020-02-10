@@ -233,6 +233,14 @@ resource "kubernetes_stateful_set" "mysql" {
       }
     }
 
+    update_strategy {
+      type = "RollingUpdate"
+
+      rolling_update {
+        partition = 0
+      }
+    }
+
     volume_claim_template {
       metadata {
         name = "${var.db_name}-mysql-data"
