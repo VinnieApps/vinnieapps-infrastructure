@@ -4,20 +4,18 @@ locals {
 
   service_name = "photos-service"
   service_port = 8080
-
-  namespace = "photos"
 }
 
 resource "kubernetes_namespace" "photos" {
   metadata {
-    name = local.namespace
+    name = "photos"
   }
 }
 
 resource "kubernetes_secret" "tls_certificate" {
   metadata {
-    name = "photos-tls"
-    namespace = local.namespace
+    name      = "photos-tls"
+    namespace = kubernetes_namespace.photos.metadata[0].name
   }
 
   data = {
@@ -30,13 +28,11 @@ resource "kubernetes_secret" "tls_certificate" {
 
 resource "kubernetes_service" "photos_frontend" {
   metadata {
-    name = local.frontend_name
-    namespace = local.namespace
+    name      = local.frontend_name
+    namespace = kubernetes_namespace.photos.metadata[0].name
   }
 
   spec {
-    type = "NodePort"
-
     selector = {
       app = local.frontend_name
     }
@@ -50,13 +46,11 @@ resource "kubernetes_service" "photos_frontend" {
 
 resource "kubernetes_service" "photos_service" {
   metadata {
-    name = local.service_name
-    namespace = local.namespace
+    name      = local.service_name
+    namespace = kubernetes_namespace.photos.metadata[0].name
   }
 
   spec {
-    type = "NodePort"
-
     selector = {
       app = local.service_name
     }
@@ -64,53 +58,6 @@ resource "kubernetes_service" "photos_service" {
     port {
       port        = local.service_port
       target_port = local.service_port
-    }
-  }
-}
-
-resource "kubernetes_ingress" "photos_ingress" {
-  metadata {
-    name = "photos-ingress"
-    namespace = local.namespace
-
-    labels = {
-      "kubernetes.io/ingress.class" = "nginx"
-    }
-  }
-
-  spec {
-    tls {
-      hosts = [var.subdomain]
-      secret_name = kubernetes_secret.tls_certificate.metadata[0].name
-    }
-
-    rule {
-      host = var.subdomain
-      http {
-        path {
-          path = "/"
-          backend {
-            service_name = local.frontend_name
-            service_port = local.frontend_port
-          }
-        }
-
-        path {
-          path = "/authenticate"
-          backend {
-            service_name = local.service_name
-            service_port = local.service_port
-          }
-        }
-
-        path {
-          path = "/api/v1"
-          backend {
-            service_name = local.service_name
-            service_port = local.service_port
-          }
-        }
-      }
     }
   }
 }
