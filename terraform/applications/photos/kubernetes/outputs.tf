@@ -1,3 +1,4 @@
-# output "load_balancer_ip_address" {
-#   value = kubernetes_ingress.photos_ingress.load_balancer_ingress[0].ip
-# }
+output "namespace" {
+  description = "Kubernetes namespace for the photos application."
+  value       = kubernetes_namespace.photos.metadata[0].name
+}

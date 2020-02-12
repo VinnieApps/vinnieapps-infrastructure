@@ -7,7 +7,6 @@ locals {
   google_credentials_file_content = replace(var.credentials_json_content, "\n", "")
 }
 
-
 data "template_file" "jobs_configuration_file" {
   template = file("${path.module}/application-jobs.yml")
   vars = {
@@ -42,7 +41,7 @@ data "template_file" "service_configuration_file" {
 resource "kubernetes_secret" "photos-jobs" {
   metadata {
     name      = "photos-jobs"
-    namespace = "photos"
+    namespace = var.namespace
   }
 
   data = {
@@ -55,7 +54,7 @@ resource "kubernetes_secret" "photos-jobs" {
 resource "kubernetes_secret" "photos-service" {
   metadata {
     name      = "photos-service"
-    namespace = "photos"
+    namespace = var.namespace
   }
 
   data = {

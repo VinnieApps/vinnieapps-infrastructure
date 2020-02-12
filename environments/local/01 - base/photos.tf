@@ -1,5 +1,5 @@
 module "photos_storage" {
-  source = "../../applications/photos/storage"
+  source = "../../../terraform/applications/photos/storage"
 
   environment = var.environment
   region      = var.region

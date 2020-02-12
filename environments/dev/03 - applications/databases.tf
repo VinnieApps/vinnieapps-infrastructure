@@ -1,5 +1,5 @@
 module "photos_mysql" {
-  source = "../../shared/mysql_kubernetes"
+  source = "../../../terraform/shared/mysql_kubernetes"
 
   db_name     = "photos"
   db_password = var.db_password

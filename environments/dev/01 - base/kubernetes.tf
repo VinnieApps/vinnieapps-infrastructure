@@ -1,5 +1,5 @@
 module "primary_gke" {
-  source = "../../shared/gke_cluster"
+  source = "../../../terraform/shared/gke_cluster"
 
   environment = var.environment
   zone        = var.zone

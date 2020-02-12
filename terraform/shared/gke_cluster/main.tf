@@ -1,5 +1,5 @@
 resource "google_container_cluster" "primary" {
-  name = "photos-${var.environment}"
+  name = "primary-${var.environment}"
   location = var.zone
   initial_node_count = var.node_code
 

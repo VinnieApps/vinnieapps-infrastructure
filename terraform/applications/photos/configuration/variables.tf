@@ -30,6 +30,10 @@ variable "google_client_secret" {
   description = "Client Secret for Google OAuth used by Photos"
 }
 
+variable "namespace" {
+  description = "Namespace to create the configuration in"
+}
+
 variable "subdomain" {
   description = "Subdomain where the Photos app will run from"
 }
