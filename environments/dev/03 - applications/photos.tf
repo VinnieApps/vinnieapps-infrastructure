@@ -10,6 +10,15 @@ locals {
   subdomain_fqdn = "photos%{if var.environment != "prod"}-${var.environment}%{endif}.${local.fqdn}"
 }
 
+module "photos_mysql" {
+  source = "../../../terraform/shared/mysql_kubernetes"
+
+  db_name     = "photos"
+  db_password = var.db_password
+  node_count  = 1
+  namespace   = "photos"
+}
+
 module "photos_storage" {
   source = "../../../terraform/applications/photos/storage"
 
