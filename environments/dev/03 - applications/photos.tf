@@ -14,7 +14,6 @@ module "photos_mysql" {
   source = "../../../terraform/shared/mysql_kubernetes"
 
   db_name     = "photos"
-  db_password = var.db_password
   node_count  = 1
   namespace   = "photos"
 }
@@ -55,10 +54,10 @@ module "photos_configuration" {
   source     = "../../../terraform/applications/photos/configuration"
 
   credentials_json_content = file("../credentials.json")
-  db_host                  = "photos-mysql-read"
+  db_host                  = "photos-mysql-0.photos-mysql.photos" // For stateful sets, $POD_NAME.$STATE_FULSET_NAME.$NAMESPACE
   db_name                  = "photos"
-  db_password              = var.db_password
-  db_username              = "appuser"
+  db_password              = module.photos_mysql.password
+  db_username              = module.photos_mysql.username
   environment              = var.environment
   google_client_id         = var.google_client_id
   google_client_secret     = var.google_client_secret

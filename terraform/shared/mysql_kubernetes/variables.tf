@@ -2,10 +2,6 @@ variable "db_name" {
   description = "Database name."
 }
 
-variable "db_password" {
-  description = "Password to set for the MySQL database"
-}
-
 variable "namespace" {
   description = "Namespace to create the dataase in."
 }

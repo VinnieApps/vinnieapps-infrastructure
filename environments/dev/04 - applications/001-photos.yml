@@ -1,0 +1,26 @@
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: photos
+  namespace: photos
+spec:
+  virtualhost:
+    fqdn: photos-dev.vinnieapps.com
+    tls:
+      secretName: photos-tls
+  routes:
+    - conditions:
+        - prefix: /
+      services:
+        - name: photos-frontend
+          port: 80
+    - conditions:
+        - prefix: /authenticate
+      services:
+        - name: photos-service
+          port: 8080
+    - conditions:
+        - prefix: /api/v1
+      services:
+        - name: photos-service
+          port: 8080

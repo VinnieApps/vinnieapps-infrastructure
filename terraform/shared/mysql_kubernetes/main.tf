@@ -1,12 +1,20 @@
-resource "random_password" "mysql" {
+resource "random_password" "mysql_root" {
+  length  = 50
+  special = false
+}
+
+resource "random_password" "mysql_username" {
+  length  = 25
+  special = false
+}
+
+resource "random_password" "mysql_password" {
   length  = 50
   special = false
 }
 
 locals {
   mysql_version = 8
-
-  username = "root"
 }
 
 resource "kubernetes_secret" "mysql" {
@@ -16,8 +24,9 @@ resource "kubernetes_secret" "mysql" {
   }
 
   data = {
-    username = local.username
-    password = random_password.mysql.result
+    username      = random_password.mysql_username.result
+    password      = random_password.mysql_password.result
+    root_password = random_password.mysql_root.result
   }
 }
 
@@ -25,18 +34,6 @@ resource "kubernetes_config_map" "mysql" {
   metadata {
     name      = "${var.db_name}-mysql"
     namespace = var.namespace
-  }
-
-  data = {
-    "primary.cnf" = <<PRIMARY
-[mysqld]
-log-bin
-PRIMARY
-
-    "secondary.cnf" = <<SECONDARY
-[mysqld]
-super-read-only
-SECONDARY
   }
 }
 
@@ -47,9 +44,14 @@ resource "kubernetes_config_map" "mysql-scripts" {
   }
 
   data = {
-    "ping.sh" = <<SCRIPT
+    "is_ready.sh" = <<SCRIPT
 #!/bin/bash
 mysql -u root -p$MYSQL_ROOT_PASSWORD -h localhost -e 'SELECT 1'
+SCRIPT
+
+    "ping.sh" = <<SCRIPT
+#!/bin/bash
+mysqladmin -p$MYSQL_ROOT_PASSWORD ping
 SCRIPT
   }
 }
@@ -66,7 +68,7 @@ resource "kubernetes_service" "mysql_primary" {
       port = 3306
     }
     selector = {
-      name : "${var.db_name}-mysql"
+      app: "${var.db_name}-mysql"
     }
   }
 }
@@ -82,7 +84,7 @@ resource "kubernetes_service" "mysql" {
       port = 3306
     }
     selector = {
-      name : "${var.db_name}-mysql"
+      app: "${var.db_name}-mysql"
     }
   }
 }
@@ -94,11 +96,7 @@ resource "kubernetes_stateful_set" "mysql" {
   }
   spec {
     service_name = "${var.db_name}-mysql"
-    replicas     = var.node_count
-    /* TODO - Replication is not working correctly
-     * - Starting more than one container, the second one doesn't get the root password correctly
-     *   which means readiness probe never passes.
-     */
+    replicas     = 1 // TODO - Fix this to support real-time following secondaries
 
     selector {
       match_labels = {
@@ -114,37 +112,6 @@ resource "kubernetes_stateful_set" "mysql" {
       }
 
       spec {
-        init_container {
-          name  = "init-mysql"
-          image = "mysql:${local.mysql_version}"
-          command = [
-            "bash",
-            "-c",
-            <<SCRIPT
-              set -ex
-              [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
-              ordinal=$${BASH_REMATCH[1]}
-              echo [mysqld] > /mnt/conf.d/server-id.cnf
-              echo server-id=$((100 + $ordinal)) >> /mnt/conf.d/server-id.cnf
-              if [[ $ordinal -eq 0 ]]; then
-                cp /mnt/config-map/primary.cnf /mnt/conf.d/
-              else
-                cp /mnt/config-map/secondary.cnf /mnt/conf.d/
-              fi
-            SCRIPT
-          ]
-
-          volume_mount {
-            name       = "config-map"
-            mount_path = "/mnt/config-map"
-          }
-
-          volume_mount {
-            name       = "conf"
-            mount_path = "/mnt/conf.d"
-          }
-        }
-
         container {
           name  = "mysql"
           image = "mysql:${local.mysql_version}"
@@ -154,17 +121,30 @@ resource "kubernetes_stateful_set" "mysql" {
             value_from {
               secret_key_ref {
                 name = kubernetes_secret.mysql.metadata[0].name
+                key  = "root_password"
+              }
+            }
+          }
+
+          env {
+            name = "MYSQL_PASSWORD"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.mysql.metadata[0].name
                 key  = "password"
               }
             }
           }
 
-          /* NOTE, for history
-           * - MYSQL_PWD, container works first run, then crashes and restarts with no password setup
-           * - Trying to use MYSQL_USER/MYSQL_PASSWORD causes error: Operation CREATE USER failed for 'root'@'%'
-           *   container crashes and restarts, password works for root but not for MYSQL_USER
-           * - Both cases I see the message:  [Server] root@localhost is created with an empty password
-           */
+          env {
+            name = "MYSQL_USER"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.mysql.metadata[0].name
+                key  = "username"
+              }
+            }
+          }
 
           env {
             name  = "MYSQL_DATABASE"
@@ -194,7 +174,7 @@ resource "kubernetes_stateful_set" "mysql" {
 
           liveness_probe {
             exec {
-              command = ["mysqladmin", "ping"]
+              command = ["/bin/bash", "/opt/scripts/ping.sh"]
             }
             initial_delay_seconds = 30
             period_seconds        = 10
@@ -203,7 +183,7 @@ resource "kubernetes_stateful_set" "mysql" {
 
           readiness_probe {
             exec {
-              command = ["/bin/bash", "/opt/scripts/ping.sh"]
+              command = ["/bin/bash", "/opt/scripts/is_ready.sh"]
             }
             initial_delay_seconds = 5
             period_seconds        = 2
