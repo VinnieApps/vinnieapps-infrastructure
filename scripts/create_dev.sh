@@ -26,5 +26,5 @@ terraform apply -auto-approve
 cd ../
 
 cd '04 - applications'
-kubectl apply -f 001-photos.yml
+./create.sh vinnieapps
 cd ../

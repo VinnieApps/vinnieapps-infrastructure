@@ -6,7 +6,7 @@ BASE_DIR=$(pwd $SCRIPT_DIR/..)
 cd $BASE_DIR/environments/dev
 
 cd '04 - applications'
-kubectl delete -f 001-photos.yml
+./destroy.sh
 cd ../
 
 cd '03 - applications'
@@ -14,7 +14,7 @@ terraform destroy -auto-approve
 cd ../
 
 cd '02 - kubernetes'
-kubectl delete -f 001-contour.yml
+kubectl delete --ignore-not-found -f 001-contour.yml
 cd ../
 
 cd '01 - base'
