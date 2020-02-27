@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 usage() {
     echo "Usage:"
     echo "   ./create_dev.sh {GCP_PROJECT} {BUCKET_NAME}"
