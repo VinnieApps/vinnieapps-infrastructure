@@ -1,4 +1,6 @@
 credentials.json
+encrypted.taz.gz*
+!encrypted.taz.gz.gpg
 letsencrypt/**
 *.pem
 .terraform

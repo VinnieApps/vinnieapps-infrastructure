@@ -21,4 +21,7 @@ WORKDIR vinnieapps-infrastructure
 ARG BRANCH
 RUN git fetch origin ${BRANCH} && git checkout ${BRANCH}
 
+ARG PASSPHRASE
+RUN /bin/bash scripts/decrypt.sh ${PASSPHRASE}
+
 RUN /bin/bash scripts/create_dev.sh vinnieapps tf-state-dev-vinnieapps

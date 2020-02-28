@@ -10,7 +10,7 @@ usage() {
     echo "  BUCKET_NAME      Bucket name in GCP to store terraform states in."
 }
 
-if [ -z "$1" ]; then
+if [ -z "$2" ]; then
     usage
     exit 1
 fi
