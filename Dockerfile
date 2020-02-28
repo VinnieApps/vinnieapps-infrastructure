@@ -17,22 +17,7 @@ RUN ./gcp-script.sh --install-dir=$(pwd) --disable-prompts
 ENV PATH="/google-cloud-sdk/bin:${PATH}"
 RUN gcloud components install kubectl
 
-ARG CACHEBUST=1
+RUN mkdir -p /opt/src
 
-# Clone repo
-RUN git clone https://github.com/VinnieApps/vinnieapps-infrastructure.git
-
-# Set working dir and checkout branch
-WORKDIR vinnieapps-infrastructure
-ARG BRANCH
-RUN git fetch origin ${BRANCH} && git checkout ${BRANCH}
-
-ARG PASSPHRASE
-RUN /bin/bash scripts/decrypt.sh ${PASSPHRASE}
-
-# Setup Google Cloud tools
-RUN gcloud auth activate-service-account --key-file=environments/dev/credentials.json
-RUN gcloud config set compute/zone us-east1-b
-RUN gcloud config set project vinnieapps
-
-RUN /bin/bash scripts/create_dev.sh vinnieapps tf-state-dev-vinnieapps
+COPY . /opt/src/
+WORKDIR /opt/src
