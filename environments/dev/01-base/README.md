@@ -1,4 +1,4 @@
-# 01 - Base
+# 01-base
 
 Contains the base infrastructure for all applications. Includes:
 
@@ -7,10 +7,5 @@ Contains the base infrastructure for all applications. Includes:
 # Pre-requesites
 
 - `terraform` installed (v0.12.19)
-
-# Running it
-
-```
-$ terraform init
-$ terraform apply
-```
+- `gcloud` tool installed and logged in the correct account/project
+- A bucket in Google Cloud storage to store Terraform state
