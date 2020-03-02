@@ -28,11 +28,35 @@ deploy_backend() {
     | kubectl apply -f -
 }
 
+deploy_frontend() {
+  echo "Finding release information..."
+  RELEASE=$(curl -s https://api.github.com/repos/VinnieApps/photos-frontend/releases/latest)
+  FRONTEND_VERSION=$(echo $RELEASE | jq -r '.tag_name[1:]')
+
+  TAG_NAME=$(echo $RELEASE | jq -r '.tag_name')
+  TAG=$(curl -s https://api.github.com/repos/VinnieApps/photos-frontend/git/ref/tags/$TAG_NAME)
+  GIT_SHA=$(echo $TAG | jq -r '.object.sha')
+
+  DOCKER_IMAGE=gcr.io/$GCP_PROJECT_ID/photos-frontend:$FRONTEND_VERSION
+
+  echo "------------- Frontend ----------------------"
+  echo "  Version is: $FRONTEND_VERSION"
+  echo "  Git Commit: $GIT_SHA"
+  echo "  Docker image: $DOCKER_IMAGE"
+  echo "--------------------------------------------"
+
+  sed s/GIT_SHA/$GIT_SHA/ templates/photos-frontend-deployment.yml \
+    | sed "s|DOCKER_IMAGE|$DOCKER_IMAGE|" \
+    | kubectl apply -f -
+}
+
 main() {
   GCP_PROJECT_ID=$1
   kubectl apply -f 001-photos-http-proxy.yml
 
   deploy_backend
+  deploy_frontend
+}
 }
 
 usage() {

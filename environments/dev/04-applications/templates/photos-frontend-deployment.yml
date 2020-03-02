@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photos-frontend
+  namespace: photos
+  labels:
+    app: photos-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photos-frontend
+  template:
+    metadata:
+      labels:
+        app: photos-frontend
+        gitSha: GIT_SHA
+    spec:
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: photos-frontend
+      containers:
+        - name: photos-frontend-image
+          image: DOCKER_IMAGE
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 3
