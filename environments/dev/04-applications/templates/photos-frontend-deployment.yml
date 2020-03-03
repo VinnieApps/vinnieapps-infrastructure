@@ -16,10 +16,6 @@ spec:
         app: photos-frontend
         gitSha: GIT_SHA
     spec:
-      volumes:
-        - name: secret-volume
-          secret:
-            secretName: photos-frontend
       containers:
         - name: photos-frontend-image
           image: DOCKER_IMAGE

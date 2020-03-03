@@ -57,7 +57,6 @@ main() {
   deploy_backend
   deploy_frontend
 }
-}
 
 usage() {
     echo "Usage:"
