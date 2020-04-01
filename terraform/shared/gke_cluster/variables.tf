@@ -12,6 +12,11 @@ variable "node_code" {
   description = "Number of nodes in the main pool"
 }
 
+variable "node_disk_size" {
+  default     = "10"
+  description = "Size of the boot volume for the nodes the pool"
+}
+
 variable "zone" {
   description = "Zone used to create the resources."
 }

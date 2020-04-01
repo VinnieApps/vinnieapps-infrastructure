@@ -23,6 +23,7 @@ resource "google_container_cluster" "primary" {
       environment = var.environment
     }
 
+    disk_size_gb = var.node_disk_size
     image_type = "UBUNTU"
     machine_type = var.machine_type
 
