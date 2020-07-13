@@ -1,4 +1,6 @@
+__pycache__
 credentials.json
+*.egg-info
 encrypted.taz.gz*
 !encrypted.taz.gz.gpg
 letsencrypt/**
@@ -7,4 +9,5 @@ letsencrypt/**
 .terraform.*
 terraform.tfvars
 terraform.tfstate*
+venv/
 .vscode/

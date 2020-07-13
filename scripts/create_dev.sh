@@ -26,19 +26,19 @@ BASE_DIR=$(pwd $SCRIPT_DIR/..)
 cd $BASE_DIR/environments/dev
 
 cd '01-base'
-./create.sh $BUCKET_NAME
+./create.sh $GCP_PROJECT $BUCKET_NAME
 cd ../
 
-cd '02-kubernetes'
-./create.sh
-cd ../
+# cd '02-kubernetes'
+# ./create.sh
+# cd ../
 
-cd '03-applications'
-./create.sh $BUCKET_NAME
-cd ../
+# cd '03-applications'
+# ./create.sh $BUCKET_NAME
+# cd ../
 
-cd '04-applications'
-./create.sh $GCP_PROJECT
-cd ../
+# cd '04-applications'
+# ./create.sh $GCP_PROJECT
+# cd ../
 
 echo "Done, the time is: $(date)"
