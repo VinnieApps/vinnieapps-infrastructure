@@ -21,4 +21,3 @@ def create_dev(tf_state_bucket, gcp_project):
 def destroy_dev(tf_state_bucket, gcp_project):
   from environments import dev
   dev.destroy(terraform_state_bucket=tf_state_bucket, gcp_project=gcp_project)
-
