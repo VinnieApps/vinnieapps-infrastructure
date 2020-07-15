@@ -17,5 +17,5 @@ sudo service mysql restart
 ### Install Virtual Environment for Python
 sudo apt-get install python3-venv
 
-### Install and configura nginx
+### Install and configura nginx, needs to be the last step
 sudo apt-get -y install nginx
