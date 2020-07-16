@@ -1,3 +1,7 @@
+variable "base_domain_zone_name" {
+    description = "Name of the Managed Zone where the subdomains will be created in."
+}
+
 variable "environment" {
     description = "Name of the environment your building."
 }

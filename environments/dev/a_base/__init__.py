@@ -7,11 +7,11 @@ import subprocess
 import sys
 import time
 
-def create(*, gcp_project, terraform_state_bucket):
+def create(*, base_domain_name, gcp_project, terraform_state_bucket):
   module_dir = os.path.dirname(__file__)
 
   terraform.init(terraform_state_bucket=terraform_state_bucket, working_directory=module_dir)
-  terraform.apply(working_directory=module_dir, environment="dev", project_id=gcp_project)
+  terraform.apply(working_directory=module_dir, base_domain_zone_name=base_domain_name, environment="dev", project_id=gcp_project)
 
   main_server_ip = instances.describe("dev-main-server").nat_ip()
 
@@ -31,8 +31,8 @@ def create(*, gcp_project, terraform_state_bucket):
   print("Development infrastructure is ready!")
   return terraform.output(working_directory=module_dir)
 
-def destroy(*, gcp_project, terraform_state_bucket):
+def destroy(*, base_domain_name, gcp_project, terraform_state_bucket):
   module_dir = os.path.dirname(__file__)
 
   terraform.init(terraform_state_bucket=terraform_state_bucket, working_directory=module_dir)
-  terraform.destroy(working_directory=module_dir, environment="dev", project_id=gcp_project)
+  terraform.destroy(working_directory=module_dir, base_domain_zone_name=base_domain_name, environment="dev", project_id=gcp_project)

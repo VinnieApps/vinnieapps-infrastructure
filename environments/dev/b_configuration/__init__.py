@@ -10,5 +10,5 @@ def create_databases(*, main_server, mysql_root_password):
   databases = ["my_finances", "photos"]
 
   for database in databases:
-    print(f"Creating database {database}...")
+    print(f"Creating database '{database}' if it doesn't exist...")
     main_server.run_command(f"mysql -u root -p{mysql_root_password} -e 'CREATE DATABASE IF NOT EXISTS {database}'")

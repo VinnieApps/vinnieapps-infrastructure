@@ -10,14 +10,22 @@ def destroy():
 
 @create.command(name="dev")
 @click.argument('gcp_project')
-@click.argument('tf_state_bucket')
-def create_dev(tf_state_bucket, gcp_project):
+@click.argument('terraform_state_bucket')
+def create_dev(gcp_project, terraform_state_bucket):
   from environments import dev
-  dev.create(terraform_state_bucket=tf_state_bucket, gcp_project=gcp_project)
+  dev.create(
+    base_domain_name=gcp_project,
+    gcp_project=gcp_project,
+    terraform_state_bucket=terraform_state_bucket,
+  )
 
 @destroy.command(name="dev")
 @click.argument('gcp_project')
-@click.argument('tf_state_bucket')
-def destroy_dev(tf_state_bucket, gcp_project):
+@click.argument('terraform_state_bucket')
+def destroy_dev(gcp_project, terraform_state_bucket):
   from environments import dev
-  dev.destroy(terraform_state_bucket=tf_state_bucket, gcp_project=gcp_project)
+  dev.destroy(
+    base_domain_name=gcp_project,
+    gcp_project=gcp_project,
+    terraform_state_bucket=terraform_state_bucket,
+  )
