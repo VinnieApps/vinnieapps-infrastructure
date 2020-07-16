@@ -13,7 +13,7 @@ def create(*, gcp_project, terraform_state_bucket):
   terraform.init(terraform_state_bucket=terraform_state_bucket, working_directory=module_dir)
   terraform.apply(working_directory=module_dir, environment="dev", project_id=gcp_project)
 
-  main_server_ip = instances.describe("dev-main-server")["networkInterfaces"][0]["accessConfigs"][0]["natIP"]
+  main_server_ip = instances.describe("dev-main-server").nat_ip()
 
   status_code = -1
   while True:
@@ -29,6 +29,7 @@ def create(*, gcp_project, terraform_state_bucket):
     time.sleep(10)
 
   print("Development infrastructure is ready!")
+  return terraform.output(working_directory=module_dir)
 
 def destroy(*, gcp_project, terraform_state_bucket):
   module_dir = os.path.dirname(__file__)

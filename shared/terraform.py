@@ -1,3 +1,4 @@
+import json
 import subprocess
 import sys
 
@@ -51,3 +52,15 @@ def init(*, terraform_state_bucket, working_directory):
     sys.exit(1)
 
   print("Terraform initialized!")
+
+def output(*, working_directory):
+  print(f"Working directory: {working_directory}")
+  completed_output = subprocess.run(["terraform", "output", "-json"], capture_output=True, cwd=working_directory)
+
+  if completed_output.returncode != 0:
+    print("Terraform output failed")
+    print(completed_output.stdout.decode('utf-8'))
+    print(completed_output.stderr.decode('utf-8'))
+    sys.exit(1)
+
+  return json.JSONDecoder().decode(completed_output.stdout.decode('utf-8'))

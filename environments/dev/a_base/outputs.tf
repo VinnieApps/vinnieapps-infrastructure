@@ -1,3 +1,8 @@
+output "main_server_name" {
+  description = "Name of the main server"
+  value       = google_compute_instance.dev_main.name
+}
+
 output "mysql_username" {
   description = "Username for the MySQL database"
   sensitive   = true
