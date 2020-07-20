@@ -9,8 +9,8 @@ locals {
   my_finances_subdomain_fqdn = "finances-dev.${local.fqdn}"
   my_finances_subdomain      = "finances-dev.${local.domain}"
 
-  photos_subdomain_fqdn = "photo-dev.${local.fqdn}"
-  photos_subdomain      = "photo-dev.${local.domain}"
+  photos_subdomain_fqdn = "photos-dev.${local.fqdn}"
+  photos_subdomain      = "photos-dev.${local.domain}"
 }
 
 resource "google_dns_record_set" "my_finances_domain" {
