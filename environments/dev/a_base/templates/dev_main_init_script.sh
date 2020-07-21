@@ -15,7 +15,12 @@ sudo sed -i 's/.*bind-address.*/bind-address=0.0.0.0/' /etc/mysql/mysql.conf.d/m
 sudo service mysql restart
 
 ### Install Virtual Environment for Python
-sudo apt-get install python3-venv
+sudo apt-get -y install python3-venv
+
+### Install Java Runtime 11
+sudo apt-get -y install openjdk-11-jre-headless
 
 ### Install and configura nginx, needs to be the last step
 sudo apt-get -y install nginx
+
+sudo chmod 777 /opt

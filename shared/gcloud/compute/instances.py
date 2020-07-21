@@ -30,3 +30,19 @@ class Instance:
       sys.exit(2)
 
     print(completed_command.stdout.decode('utf-8'))
+
+  def upload(self, file):
+    arguments = ["gcloud", "compute", "scp", file, f"{self.instance['name']}:~"]
+    completed_scp = subprocess.run(arguments, capture_output=True)
+
+    if completed_scp.returncode != 0:
+      print("-- Command failed! --")
+      print("-- Standard Output --")
+      print(completed_scp.stdout.decode('utf-8'))
+      print("---------------------")
+      print("-- Standard Error  --")
+      print(completed_scp.stderr.decode('utf-8'))
+      print("---------------------")
+      sys.exit(2)
+
+    print("File '{file}' uploaded successfully.")
