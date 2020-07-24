@@ -7,10 +7,10 @@ import tempfile
 def create(*, main_server_name, mysql_root_password, mysql_appuser, mysql_appuser_password, server_key):
   main_server = instances.describe(main_server_name)
 
-  # create_databases(main_server = main_server, mysql_root_password = mysql_root_password)
-  # add_nginx_configurations(main_server = main_server)
-  # add_supervisor_configurations(main_server = main_server)
-  # ensure_application_directories(main_server = main_server)
+  create_databases(main_server = main_server, mysql_root_password = mysql_root_password)
+  add_nginx_configurations(main_server = main_server)
+  add_supervisor_configurations(main_server = main_server)
+  ensure_application_directories(main_server = main_server)
   create_application_configurations(
     main_server = main_server,
     mysql_appuser = mysql_appuser,
@@ -48,7 +48,7 @@ def create_application_configurations(*, main_server, mysql_appuser, mysql_appus
     main_server.upload(temp.name)
     temp_filename.unlink()
 
-    main_server.run_command(f"sudo mkdir -p /opt/apps/my_finances/app/; sudo mv {temp_filename.name} /opt/apps/my_finances/app/config.py")
+    main_server.run_command(f"sudo mkdir -p /opt/apps/configs/my_finances; sudo mv {temp_filename.name} /opt/apps/configs/my_finances/config.py")
 
   main_server.run_command("sudo chown -R appuser:appuser /opt/apps")
 
