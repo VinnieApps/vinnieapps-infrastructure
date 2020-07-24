@@ -14,6 +14,16 @@ mysql -u root '-p${root_password}' -e "GRANT ALL PRIVILEGES ON *.* TO '${db_user
 sudo sed -i 's/.*bind-address.*/bind-address=0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo service mysql restart
 
+### Install Supervisor
+sudo apt-get -y install supervisor
+
+### Account to own applications
+useradd -m -d /home/appuser appuser
+
+### Create directory where apps will run from
+mkdir /opt/apps
+chown -R appuser:appuser /opt/apps
+
 ### Install Virtual Environment for Python
 sudo apt-get -y install python3-venv
 

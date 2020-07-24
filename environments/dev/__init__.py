@@ -9,8 +9,11 @@ def create(*, base_domain_name, gcp_project, terraform_state_bucket):
   )
 
   create_configuration(
-    main_server_name=output["main_server_name"]["value"],
+    mysql_appuser=output["mysql_username"]["value"],
+    mysql_appuser_password=output["mysql_password"]["value"],
     mysql_root_password=output["mysql_root_password"]["value"],
+    main_server_name=output["main_server_name"]["value"],
+    server_key=output["server_key"]["value"],
   )
 
 def destroy(*, base_domain_name, gcp_project, terraform_state_bucket):

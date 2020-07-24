@@ -54,7 +54,6 @@ def init(*, terraform_state_bucket, working_directory):
   print("Terraform initialized!")
 
 def output(*, working_directory):
-  print(f"Working directory: {working_directory}")
   completed_output = subprocess.run(["terraform", "output", "-json"], capture_output=True, cwd=working_directory)
 
   if completed_output.returncode != 0:

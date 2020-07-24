@@ -20,3 +20,9 @@ output "mysql_root_password" {
   sensitive   = true
   value       = random_password.mysql_root.result
 }
+
+output "server_key" {
+  description = "Key used to sign session objects in Flask"
+  sensitive   = true
+  value       = random_password.server_key.result
+}

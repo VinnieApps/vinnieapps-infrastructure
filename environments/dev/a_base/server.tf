@@ -13,6 +13,11 @@ resource "random_password" "mysql_password" {
   special = false
 }
 
+resource "random_password" "server_key" {
+  length  = 64
+  special = false
+}
+
 data "template_file" "dev_main_init_script" {
   template = file("${path.module}/templates/dev_main_init_script.sh")
 

@@ -15,8 +15,13 @@ class Instance:
   def nat_ip(self):
     return self.instance["networkInterfaces"][0]["accessConfigs"][0]["natIP"]
 
-  def run_command(self, command):
-    arguments = ["gcloud", "compute", "ssh", self.instance["name"], '--command', command]
+  def run_command(self, command, user=None):
+    arguments = ["gcloud", "compute", "ssh", '--command', command]
+    if user is None:
+      arguments.append(self.instance["name"])
+    else:
+      arguments.append(f"{user}@{self.instance['name']}")
+
     completed_command = subprocess.run(arguments, capture_output=True)
 
     if completed_command.returncode != 0:
@@ -45,4 +50,4 @@ class Instance:
       print("---------------------")
       sys.exit(2)
 
-    print("File '{file}' uploaded successfully.")
+    print(f"File '{file}' uploaded successfully.")
