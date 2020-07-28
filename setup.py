@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='infrastructure',
     version='0.1.0',
-    py_modules=['main'],
+    packages=['infrastructure'],
     install_requires=[
         'Click>=7,<8',
         'requests>=2,<3',
@@ -11,8 +11,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'create = main:create',
-            'destroy = main:destroy',
+            'infrastructure = infrastructure:main',
         ],
     },
 )

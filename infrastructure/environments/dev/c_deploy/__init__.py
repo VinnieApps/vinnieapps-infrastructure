@@ -1,4 +1,4 @@
-from shared.gcloud.compute import instances
+from infrastructure.gcloud.compute import instances
 
 def create(*, main_server_name, mysql_appuser, mysql_appuser_password):
   main_server = instances.describe(main_server_name)
@@ -22,7 +22,7 @@ def deploy_my_finances(*, main_server, mysql_appuser, mysql_appuser_password):
   main_server.run_command(f"cd /opt/apps/my_finances; mysql -u {mysql_appuser} -p{mysql_appuser_password} my_finances < script_my_finances.sql")
 
   # Install app dependencies
-  main_server.run_command("cd /opt/apps/my_finances; python3 -m venv venv; source venv/bin/activate; python setup.py install")
+  main_server.run_command("cd /opt/apps/my_finances; python3 -m venv venv; source venv/bin/activate; python setup.py -q install")
 
   # Fix ownership and restart application
   main_server.run_command("sudo chown -R appuser:appuser /opt/apps/my_finances; sudo supervisorctl restart my_finances")

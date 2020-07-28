@@ -1,7 +1,7 @@
 def create(*, base_domain_name, gcp_project, terraform_state_bucket):
-  from environments.dev.a_base import create as create_base
-  from environments.dev.b_configuration import create as create_configuration
-  from environments.dev.c_deploy import create as deploy_applications
+  from infrastructure.environments.dev.a_base import create as create_base
+  from infrastructure.environments.dev.b_configuration import create as create_configuration
+  from infrastructure.environments.dev.c_deploy import create as deploy_applications
 
   output = create_base(
     base_domain_name=base_domain_name,
@@ -24,7 +24,7 @@ def create(*, base_domain_name, gcp_project, terraform_state_bucket):
   )
 
 def destroy(*, base_domain_name, gcp_project, terraform_state_bucket):
-  from environments.dev.a_base import destroy as destroy_base
+  from infrastructure.environments.dev.a_base import destroy as destroy_base
 
   destroy_base(
     base_domain_name=base_domain_name,

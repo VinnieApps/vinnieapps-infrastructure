@@ -1,6 +1,7 @@
 from jinja2 import Template
-from shared.gcloud.compute import instances
+from infrastructure.gcloud.compute import instances
 
+import os
 import pathlib
 import tempfile
 
@@ -19,22 +20,22 @@ def create(*, main_server_name, mysql_root_password, mysql_appuser, mysql_appuse
   )
 
 def add_nginx_configurations(*, main_server):
-  main_server.upload("environments/dev/b_configuration/nginx/my_finances.conf")
+  main_server.upload(f"{os.path.dirname(__file__)}/nginx/my_finances.conf")
   main_server.run_command("sudo mv my_finances.conf /etc/nginx/conf.d")
 
-  main_server.upload("environments/dev/b_configuration/nginx/photos.conf")
+  main_server.upload(f"{os.path.dirname(__file__)}/nginx/photos.conf")
   main_server.run_command("sudo mv photos.conf /etc/nginx/conf.d")
 
   main_server.run_command("sudo nginx -s reload")
 
 def add_supervisor_configurations(*, main_server):
-  main_server.upload("environments/dev/b_configuration/supervisor/my_finances.ini")
+  main_server.upload(f"{os.path.dirname(__file__)}/supervisor/my_finances.ini")
   main_server.run_command("sudo mv my_finances.ini /etc/supervisor/conf.d/my_finances.conf")
 
   main_server.run_command("sudo supervisorctl reread; sudo supervisorctl update")
 
 def create_application_configurations(*, main_server, mysql_appuser, mysql_appuser_password, server_key):
-  with open("environments/dev/b_configuration/configs/my_finances/config.py") as f:
+  with open(f"{os.path.dirname(__file__)}/configs/my_finances/config.py") as f:
     template = Template(f.read())
     temp = tempfile.NamedTemporaryFile(delete=False)
     temp.write(template.render(

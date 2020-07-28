@@ -1,10 +1,14 @@
 import click
 
 @click.group()
+def main():
+  pass
+
+@main.group()
 def create():
   pass
 
-@click.group()
+@main.group()
 def destroy():
   pass
 
@@ -12,7 +16,7 @@ def destroy():
 @click.argument('gcp_project')
 @click.argument('terraform_state_bucket')
 def create_dev(gcp_project, terraform_state_bucket):
-  from environments import dev
+  from infrastructure.environments import dev
   dev.create(
     base_domain_name=gcp_project,
     gcp_project=gcp_project,
@@ -23,7 +27,7 @@ def create_dev(gcp_project, terraform_state_bucket):
 @click.argument('gcp_project')
 @click.argument('terraform_state_bucket')
 def destroy_dev(gcp_project, terraform_state_bucket):
-  from environments import dev
+  from infrastructure.environments import dev
   dev.destroy(
     base_domain_name=gcp_project,
     gcp_project=gcp_project,
