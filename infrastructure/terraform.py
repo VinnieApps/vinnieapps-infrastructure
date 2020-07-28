@@ -36,15 +36,15 @@ def destroy(*, working_directory, **kwargs):
 
   print(f"Terraform destroy succeeded!")
 
-def init(*, terraform_state_bucket, working_directory):
+def init(*, terraform_state_bucket=None, working_directory):
   print(f"Working directory: {working_directory}")
   print("Initializing Terraform...")
 
-  init_subprocess = subprocess.Popen(
-    ["terraform", "init", f"-backend-config=bucket={terraform_state_bucket}"],
-    cwd=working_directory,
-  )
+  command = ["terraform", "init"]
+  if terraform_state_bucket is not None:
+    command.append(f"-backend-config=bucket={terraform_state_bucket}")
 
+  init_subprocess = subprocess.Popen(command, cwd=working_directory)
   init_subprocess.wait()
 
   if init_subprocess.returncode != 0:
