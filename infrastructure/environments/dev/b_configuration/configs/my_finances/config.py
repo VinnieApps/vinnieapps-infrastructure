@@ -1,0 +1,5 @@
+MYSQL_DATABASE='my_finances'
+MYSQL_HOST='localhost'
+MYSQL_PASSWORD='{{database_password}}'
+MYSQL_USER='{{database_username}}'
+MSQL_SECRET_KEY='{{server_key}}'

@@ -12,9 +12,34 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
-      - name: Build Docker Image
-        run: docker build -t infra-builder .
-      - name: Create or Update Environment
-        run: docker run infra-builder /bin/bash ./scripts/setup_env_and_create_dev.sh $PASSPHRASE
+
+      - name: Install tools
+        run: |
+          apt-get update && apt-get install -y git curl unzip gnupg2 python3 python3-venv python3-setuptools jq
+
+          mkdir /tmp/bin
+          PATH="/tmp/bin:${PATH}"
+
+          curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip
+          unzip /tmp/terraform.zip -d /tmp
+          mv /tmp/terraform /tmp/bin
+
+          curl -o gcp-script.sh https://sdk.cloud.google.com && chmod +x gcp-script.sh
+          ./gcp-script.sh --install-dir=$(pwd) --disable-prompts
+          PATH="/google-cloud-sdk/bin:${PATH}"
+          gcloud components install kubectl
+
+      - name: Setup Environment
         env:
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
+        run: |
+          ./scripts/decrypt.sh $PASSPHRASE
+
+          gcloud auth activate-service-account --key-file=credentials.json
+          gcloud config set compute/zone us-east1-b
+          gcloud config set project vinnieapps
+
+      - name: Create or Update Environment
+        run: |
+          python3 setup.py install
+          infrastructure create dev vinnieapps tf-state-dev-vinnieapps
