@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
 setup(
     name='infrastructure',
     version='0.1.0',
-    packages=['infrastructure'],
+    packages=find_packages('infrastructure'),
     install_requires=[
         'Click>=7,<8',
         'requests>=2,<3',
