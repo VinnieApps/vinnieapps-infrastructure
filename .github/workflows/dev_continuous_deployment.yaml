@@ -26,8 +26,6 @@ jobs:
 
           curl -o gcp-script.sh https://sdk.cloud.google.com && chmod +x gcp-script.sh
           ./gcp-script.sh --install-dir=$(pwd) --disable-prompts
-          PATH="/google-cloud-sdk/bin:${PATH}"
-          gcloud components install kubectl
 
       - name: Setup Environment
         env:
