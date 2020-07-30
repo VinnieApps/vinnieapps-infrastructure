@@ -15,7 +15,8 @@ jobs:
 
       - name: Install tools
         run: |
-          apt-get update && apt-get install -y git curl unzip gnupg2 python3 python3-venv python3-setuptools jq
+          sudo apt-get update
+          sudo apt-get install -y git curl unzip gnupg2 python3 python3-venv python3-setuptools jq
 
           mkdir /tmp/bin
           PATH="/tmp/bin:${PATH}"
@@ -39,5 +40,5 @@ jobs:
 
       - name: Create or Update Environment
         run: |
-          python3 setup.py install
+          sudo python3 setup.py install
           infrastructure create dev vinnieapps tf-state-dev-vinnieapps
