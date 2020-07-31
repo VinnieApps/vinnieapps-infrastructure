@@ -7,65 +7,51 @@ This project stores all the files to build the infratructure for all VinnieApps 
 VinnieApps run in Google Cloud.
 To build the infrastructure it uses Python and Terraform.
 
+## Tools
+
 To start, you'll need a Google Cloud account and project.
 
 You will neeed the following applications to run everything:
 
 - Python 3 - All scripting is done using Python, version `3.8.*`. [Download instructions](https://www.python.org/downloads/)
 - `terraform` - Used to build all the resources in Google Cloud, version `0.12.*`. [Download instructions](https://www.terraform.io/downloads.html)
-- `docker` - Used to generate TLS certificates from Let's Encrypt. [Download Instructions](https://www.docker.com/products/developer-tools)
+- `gcloud` - Tool used to communicate with Google Cloud instances and other things [Download instructions](https://cloud.google.com/sdk/docs#install_the_latest_cloud_tools_version_cloudsdk_current_version)
 
-You'll also need to create a service account.
+## Service Account
+
+You'll need to create a service account.
 Follow [this tutorial](https://cloud.google.com/iam/docs/creating-managing-service-account-keys) to get a `credentials.json` file.
 This file contains all that is needed to create and manage resources in your Google Cloud project.
-<!-- TODO: Review this part -->
-Download and put your `credentials.json` file in the `terraform` directory.
+
+<!-- TODO: Review this part after working on https://github.com/VinnieApps/vinnieapps-infrastructure/issues/19 -->
+Download and put your `credentials.json` file in the root directory where you're running this from.
 Don't worry, that file is marked to be ignored by git.
 
 ## GCP Enabled APIs
 
-The following APIs need to be enabled in your GCP project.
+There APIs that need to be enabled in your GCP project.
 To enable them, go [here](https://console.cloud.google.com/apis/library), search then click enable.
 
-- Google Cloud DNS API
-<!-- TODO: Review this part -->
-- Kubernetes Engine API
+Unfortunately, that varies per environment you're going to create.
+Terraform and other tools normally report a clear error message explaining what API you need and it is not enabled.
+
+Here are some that the development environment needs:
+- Cloud DNS API
+- Cloud Storage API
+
+# Repository Structure
+
+This repository has the following structure:
+
+- The [infrastructure](./infrastructure/README.md) directory stores the Python code and files that it needs to run the Python code.
+- The [terraform](./terraform/README.md) directory stores all the Terraform modules and files required to run the modules.
+- The `scripts` directory stores some reminescent bash scripts from previous incarnations of this repo. This will eventually go away when all that code migrates to Python.
+
 
 # Getting Started
 
 1. Create and activate a [virtual environment](https://docs.python.org/3/library/venv.html).
-1. Install the build system as a module with the following command: `pip install --editable .`
+1. Install the [infrastructure](./infrastructure) application: `python setup.py install`
 
-There are two major commands, running each with no arguments will give more details on how to use them.
-
-- `create`: can be used to create a specific environment.
-- `destroy`: can be used to destroy a specific environment.
-
-# Repository Structure
-
-<!-- TODO: Review -->
-
-The `terraform` directory contains all the files necessary to create all environments.
-In it there are three base folders:
-
-- `applications` - contains application specific modules that can be shared between environments.
-- `environments` - contains all the environments folders. This is where you'll want to execute Terraform from.
-- `shared` - shared modules.
-
-# Let's Encrypt
-
-<!-- TODO: Try to automate this process with: https://github.com/certbot/certbot -->
-
-To generate the TLS certificate and key for the subdomain you'll need to be able to manage the domain.
-The challenge will ask you to place a value in a TXT record under a subdomain of your subdomain.
-
-The script `scripts/letsencrypt_certificate.sh` will execute a Docker image provided by Let's Encrypt that will take you through the challenge.
-Execute it from the root of this repo and after you're done it will have created a `letsencrypt` folder which will be used as volumes to the container.
-After running the script and following the instructions, the two files (private key and pem) will be generated under the following directory:
-
-```
-letsencrypt/etc/letsencrypt/live/{your-sub-domain}/fullchain.pem
-letsencrypt/etc/letsencrypt/live/{your-sub-domain}/privkey.pem
-```
-
-With the files generated, copy them to the `terraform` folder.
+Then you can just call `infrastructure` to create or update the environment.
+Running the command with `--help` will give more details of how it works.
