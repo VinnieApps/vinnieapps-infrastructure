@@ -30,6 +30,9 @@ sudo apt-get -y install python3-venv
 ### Install Java Runtime 11
 sudo apt-get -y install openjdk-11-jre-headless
 
+### Install certbot
+sudo apt-get -y install software-properties-common certbot python3-certbot-nginx
+
 ### Install and configura nginx, needs to be the last step
 sudo apt-get -y install nginx
 

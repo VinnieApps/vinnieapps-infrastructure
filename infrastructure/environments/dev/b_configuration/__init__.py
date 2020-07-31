@@ -18,6 +18,7 @@ def create(*, main_server_name, mysql_root_password, mysql_appuser, mysql_appuse
     mysql_appuser_password = mysql_appuser_password,
     server_key = server_key,
   )
+  configure_certbot(main_server = main_server)
 
 def add_nginx_configurations(*, main_server):
   main_server.upload(f"{os.path.dirname(__file__)}/nginx/my_finances.conf")
@@ -33,6 +34,9 @@ def add_supervisor_configurations(*, main_server):
   main_server.run_command("sudo mv my_finances.ini /etc/supervisor/conf.d/my_finances.conf")
 
   main_server.run_command("sudo supervisorctl reread; sudo supervisorctl update")
+
+def configure_certbot(*, main_server):
+  main_server.run_command("sudo certbot --redirect --nginx --non-interactive --agree-tos -m viniciusisola@gmail.com --domains finances-dev.vinnieapps.com --domains photos-dev.vinnieapps.com")
 
 def create_application_configurations(*, main_server, mysql_appuser, mysql_appuser_password, server_key):
   with open(f"{os.path.dirname(__file__)}/configs/my_finances/config.py") as f:
