@@ -33,6 +33,9 @@ sudo apt-get -y install openjdk-11-jre-headless
 ### Install certbot
 sudo apt-get -y install software-properties-common certbot python3-certbot-nginx
 
+### Install jq - json processor
+sudo apt-get -y install jq
+
 ### Install and configura nginx, needs to be the last step
 sudo apt-get -y install nginx
 

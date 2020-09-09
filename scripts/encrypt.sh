@@ -8,7 +8,7 @@ ENCRYPTED_FILE=encrypted.taz.gz.gpg
 
 rm -f $FILE_TO_ENCRYPT $ENCRYPTED_FILE
 tar -czvf $FILE_TO_ENCRYPT \
-  credentials.json
+  credentials.json photos_dev_secrets.json
 
 gpg2 --symmetric --batch --yes --passphrase "$PASSWORD" $FILE_TO_ENCRYPT
 md5 $FILE_TO_ENCRYPT
