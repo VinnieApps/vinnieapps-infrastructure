@@ -1,0 +1,21 @@
+api.base.path: /api/v1
+
+oauth.google:
+  clientId: '{{google_client_id}}'
+  clientSecret: '{{google_client_secret}}'
+  redirectUri: https://photos-dev.vinnieapps.com/authenticate/oauth2callback
+
+google.cloud:
+  credentials: '{{google_cloud_credentials}}'
+
+uploads.bucket.name: uploads-vinnie-dev
+uploads.bucket.thumbnails: uploads-vinnie-dev-thumbnails
+
+security.token.filter.secret: {{token_secret}}
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/photos?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: '{{database_username}}'
+    password: '{{database_password}}'

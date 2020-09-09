@@ -10,6 +10,7 @@ credentials.json
 dist/
 encrypted.taz.gz*
 letsencrypt/**
+photos_dev_secrets.json
 terraform.tfstate*
 terraform.tfvars
 venv/
