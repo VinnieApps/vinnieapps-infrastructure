@@ -8,8 +8,8 @@ oauth.google:
 google.cloud:
   credentials: '{{google_cloud_credentials}}'
 
-uploads.bucket.name: uploads-vinnie-dev
-uploads.bucket.thumbnails: uploads-vinnie-dev-thumbnails
+uploads.bucket.name: photos-vinnieapps-dev
+uploads.bucket.thumbnails: photos-vinnieapps-dev-thumbnails
 
 security.token.filter.secret: {{token_secret}}
 
