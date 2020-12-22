@@ -19,6 +19,12 @@ def create(*, main_server_name, mysql_root_password, mysql_appuser, mysql_appuse
     mysql_appuser_password = mysql_appuser_password,
     server_key = server_key,
   )
+  create_my_finances_ini_configuration(
+    main_server = main_server,
+    mysql_appuser = mysql_appuser,
+    mysql_appuser_password = mysql_appuser_password,
+    server_key = server_key,
+  )
   create_photos_configuration(
     main_server = main_server,
     mysql_appuser = mysql_appuser,
@@ -67,6 +73,25 @@ def create_my_finances_configuration(*, main_server, mysql_appuser, mysql_appuse
     temp_filename.unlink()
 
     main_server.run_command(f"sudo mkdir -p /opt/apps/configs/my_finances; sudo mv {temp_filename.name} /opt/apps/configs/my_finances/config.py")
+
+  main_server.run_command("sudo chown -R appuser:appuser /opt/apps")
+
+def create_my_finances_ini_configuration(*, main_server, mysql_appuser, mysql_appuser_password, server_key):
+  with open(f"{os.path.dirname(__file__)}/configs/my_finances/config.ini") as f:
+    template = Template(f.read())
+    temp = tempfile.NamedTemporaryFile(delete=False)
+    temp.write(template.render(
+      database_password=mysql_appuser_password,
+      database_username=mysql_appuser,
+      server_key=server_key,
+    ).encode("utf-8"))
+    temp.close()
+
+    temp_filename = pathlib.Path(temp.name)
+    main_server.upload(temp.name)
+    temp_filename.unlink()
+
+    main_server.run_command(f"sudo mkdir -p /opt/apps/configs/my_finances; sudo mv {temp_filename.name} /opt/apps/configs/my_finances/config.ini")
 
   main_server.run_command("sudo chown -R appuser:appuser /opt/apps")
 

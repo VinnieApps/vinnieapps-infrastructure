@@ -1,5 +1,6 @@
 __pycache__
 !encrypted.taz.gz.gpg
+.DS_Store
 .terraform
 .terraform.*
 .vscode/
