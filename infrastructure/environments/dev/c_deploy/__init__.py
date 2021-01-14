@@ -17,7 +17,7 @@ def deploy_my_finances(*, main_server, mysql_appuser, mysql_appuser_password):
 
   # Copy configs
   main_server.run_command("sudo cp /opt/apps/configs/my_finances/config.py /opt/apps/my_finances/app; sudo chown -R $(whoami):$(whoami) /opt/apps/my_finances")
-  main_server.run_command("sudo cp /opt/apps/configs/my_finances/config.ini /opt/apps/my_finances/app; sudo chown -R $(whoami):$(whoami) /opt/apps/my_finances")
+  main_server.run_command("sudo cp /opt/apps/configs/my_finances/config.ini /opt/apps/my_finances; sudo chown -R $(whoami):$(whoami) /opt/apps/my_finances")
 
   # Recreate DB
   main_server.run_command(f"mysql -u {mysql_appuser} -p{mysql_appuser_password} -e 'drop database if exists my_finances'")
