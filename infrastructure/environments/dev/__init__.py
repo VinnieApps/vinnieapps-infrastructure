@@ -19,8 +19,6 @@ def create(*, base_domain_name, gcp_project, terraform_state_bucket):
 
   deploy_applications(
     main_server_name=output["main_server_name"]["value"],
-    mysql_appuser=output["mysql_username"]["value"],
-    mysql_appuser_password=output["mysql_password"]["value"],
   )
 
 def destroy(*, base_domain_name, gcp_project, terraform_state_bucket):
